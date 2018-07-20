@@ -10,8 +10,8 @@
 #include <cstdlib>
 #include <cassert>
 
-#include <faiss/IndexFlat.h>
-#include <faiss/IndexIVFFlat.h>
+#include <faiss/c_api/IndexFlat.h>
+#include <faiss/c_api/IndexIVFFlat.h>
 
 
 int main() {

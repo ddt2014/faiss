@@ -5,7 +5,7 @@ project(faiss C CXX)
 
 option(BUILD_TUTORIAL "Build tutorials" ON)
 option(BUILD_TEST "Build tests" ON)
-option(BUILD_WITH_GPU "Build faiss with gpu (cuda) support" ON)
+option(BUILD_WITH_GPU "Build faiss with gpu (cuda) support" OFF)
 option(WITH_MKL "Build with MKL if ON (OpenBLAS if OFF)" OFF)
 
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/Modules)
@@ -33,8 +33,8 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 # specify header and cpp files
-file(GLOB faiss_cpu_headers ${CMAKE_CURRENT_SOURCE_DIR}/*.h)
-file(GLOB faiss_cpu_cpp ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
+file(GLOB faiss_cpu_headers ${CMAKE_CURRENT_SOURCE_DIR}/c_api/*.h)
+file(GLOB faiss_cpu_cpp ${CMAKE_CURRENT_SOURCE_DIR}/c_api/*.cpp)
 
 set(faiss_lib faiss)
 add_library(${faiss_lib} STATIC ${faiss_cpu_headers} ${faiss_cpu_cpp})
@@ -52,9 +52,9 @@ if(BUILD_TUTORIAL)
 endif(BUILD_TUTORIAL)
 
 # build tests
-if(BUILD_TEST)
-    add_subdirectory(tests)
-endif(BUILD_TEST)
+#if(BUILD_TEST)
+#    add_subdirectory(tests)
+#endif(BUILD_TEST)
 # Install libraries
 install(TARGETS ${faiss_lib}
         ARCHIVE DESTINATION lib

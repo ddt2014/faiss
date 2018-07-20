@@ -12,9 +12,9 @@
 
 #include <gtest/gtest.h>
 
-#include <faiss/IndexIVFPQ.h>
-#include <faiss/IndexFlat.h>
-#include <faiss/index_io.h>
+#include <faiss/c_api/IndexIVFPQ.h>
+#include <faiss/c_api/IndexFlat.h>
+#include <faiss/c_api/index_io.h>
 
 TEST(IVFPQ, accuracy) {
 

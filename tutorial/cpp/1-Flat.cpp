@@ -9,7 +9,7 @@
 #include <cstdio>
 #include <cstdlib>
 
-#include <faiss/IndexFlat.h>
+#include <faiss/c_api/IndexFlat.h>
 
 
 int main() {
