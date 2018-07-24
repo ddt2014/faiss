@@ -791,7 +791,6 @@ static void knn_L2sqr_sse (
                 float_maxheap_array_t * res)
 {
     size_t k = res->k;
-
 #pragma omp parallel for
     for (size_t i = 0; i < nx; i++) {
         const float * x_i = x + i * d;
