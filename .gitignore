@@ -16,3 +16,6 @@
 /c_api/gpu/bin/
 /tests/test
 /tests/gtest/
+/include/*
+/build/*
+/lib/*
