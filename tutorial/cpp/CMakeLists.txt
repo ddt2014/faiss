@@ -8,7 +8,7 @@ foreach(source ${srcs})
 
     # target
     add_executable(${name} ${source})
-    target_link_libraries(${name} ${faiss_lib})
+    target_link_libraries(${name} ${faiss_lib} ) 
 
     # Install
     install(TARGETS ${name} DESTINATION bin)

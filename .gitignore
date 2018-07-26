@@ -19,3 +19,4 @@
 /include/*
 /build/*
 /lib/*
+*.json
