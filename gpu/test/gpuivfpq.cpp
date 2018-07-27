@@ -110,7 +110,8 @@ int main ()
   struct timeval begin, end;
 
   string query_list = "/storage2/public/Data/Surveilliance/features/v1.5_0629/query_list0629.txt";
-  string search_list = "/storage2/public/Data/Surveilliance/features/v1.5_0629/search_db_list0629.txt";
+  //string search_list = "/storage2/public/Data/Surveilliance/features/v1.5_0629/search_db_list0629.txt";
+  string search_list = "/home/dingxu/faiss/build/bin/search_900w.txt";
   string train_list = "/storage2/public/Data/Surveilliance/features/v1.5_0629/train_list0629.txt";
   string output_dir = "/home/dingxu/faiss/gpu/test";
   
@@ -129,9 +130,9 @@ int main ()
   int nt = records_train.features.size();     // database size
   int ns = records_search.features.size();     // database size
   int nq = records_query.features.size();    // nb of queries
-  int nlist = 512;    //coarse 分类数
-  int nprobes = 32;
-  //int k = 100;
+  int nlist = 256;    //coarse 分类数
+  int nprobes = 64;
+  int k = 100;
   int dev_no = 1;
   
   int nbits = 8;
@@ -142,19 +143,19 @@ int main ()
     for(int m = 16; m <= 64; m *= 2) {
     for(int nbits = 4; nbits <= 8; nbits += 2) {
 */     
-      int k[3] = {1, 5, 100};
-      for(int kk = 0; kk < 3;  kk++) {   
-      if(m == 64 && nbits == 8)
-        continue;
+//      int k[3] = {1, 5, 100};
+//      for(int kk = 0; kk < 3;  kk++) {   
+//      if(m == 64 && nbits == 8)
+//        continue;
       bool flag = false;
       json::JSON js;
       js["search_results"]=json::Array();
-      string name;
+      string name = "/result.json";
 /*      name =  "/matrix_nlist=_" + to_string(nlist) + "_nprobes=_" + to_string(nprobes) +
        "_m=_" + to_string(m) + "_nbits=_" + to_string(nbits) + "_.json";
-*/      name =  "/matrix_k=_" + to_string(k[kk]) + "_.json";
+      name =  "/matrix_k=_" + to_string(k[kk]) + "_.json";
       cout << name << "---------" << endl;
-      faiss::gpu::StandardGpuResources resources;
+*/      faiss::gpu::StandardGpuResources resources;
       faiss::gpu::GpuIndexIVFPQConfig config;
       config.device = dev_no;
       faiss::gpu::GpuIndexIVFPQ index (
@@ -164,15 +165,15 @@ int main ()
       index.add (ns, x_search);
       
       {
-        faiss::Index::idx_t *I = new faiss::Index::idx_t[k[kk] * nq], cnt = 0, cnt2 = 0;
-        float *D = new float[k[kk] * nq];
+        faiss::Index::idx_t *I = new faiss::Index::idx_t[k * nq], cnt = 0, cnt2 = 0;
+        float *D = new float[k * nq];
         if(I == nullptr || D == nullptr) {
             cout << "new failed";
             return 0;
         }
         double sum_time = 0.0;
         gettimeofday(&begin,NULL);
-        index.search (nq, x_query, k[kk], D, I);
+        index.search (nq, x_query, k, D, I);
         gettimeofday(&end,NULL);
         diff = (end.tv_sec - begin.tv_sec) * 1000.0 + (end.tv_usec - begin.tv_usec) / 1000.0;
         cout << " search time: " << diff << endl;
@@ -188,7 +189,7 @@ int main ()
           json::JSON query;
           query["query_filename"]=records_query.filenames[i];
           json::JSON pq_topn = json::Array(); 
-          for(int j = 0; j < k[kk]; j++){
+          for(int j = 0; j < k; j++){
             json::JSON tmp;
             bool change = false;
             if(I[cnt2 + j] >=0 && I[cnt2 + j] < ns) {
@@ -211,7 +212,7 @@ int main ()
           query["pq_search_time"] = diff;
           js["search_results"].append(query);
           cnt += d;
-          cnt2 += k[kk];
+          cnt2 += k;
         }
         string ouput_json_filename = output_dir + name;
         ofstream out(ouput_json_filename);
@@ -220,7 +221,6 @@ int main ()
         delete [] I;
         delete [] D;
     }
-  }
 
   delete [] x_train;
   delete [] x_query;
